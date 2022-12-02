@@ -57,13 +57,13 @@ public class Account implements Serializable {
 
 	 //Search a book in the library, manager and user can all use this function. return a list of book that meet the requirements of user input
     ArrayList<Book> searchForABook(Scanner scanner, LocalLibraryData localLibraryData, boolean selectOneBook) {
-	System.out.print("Enter all or part of the title: ");
+	GoogleTranslateAPILanguageSetter.translateAndPrint("Enter all or part of the title: ");
 	if (!scanner.hasNextLine()) {
 	    return null;
 	}
 	String titleFragment = scanner.nextLine();
 
-	System.out.println("Books found:");
+	GoogleTranslateAPILanguageSetter.translateAndPrintln("Books found:");
 
 	int numberFound = 0;
 	Book bookFound = null;
@@ -79,7 +79,7 @@ public class Account implements Serializable {
 	    }
 	}
 	if (numberFound == 0) {
-	    System.out.println("Book not found.");
+	    GoogleTranslateAPILanguageSetter.translateAndPrintln("Book not found.");
 		return null;
 	} 
 	else{

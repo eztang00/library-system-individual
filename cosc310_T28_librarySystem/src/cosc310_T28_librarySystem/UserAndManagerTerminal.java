@@ -7,14 +7,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class UserAndManagerTerminal extends Thread {
     LocalLibraryData localLibraryData;
     Console console;
+    Scanner scanner;
+    boolean restart = false;
 
     public UserAndManagerTerminal() {
 	super();
+    }
+
+    public void start() {
+	GoogleTranslateAPILanguageSetter.addRestartListener(e -> restart()); //needed to restart after changing langage
+	super.start();
     }
 
     /**
@@ -24,32 +32,43 @@ public class UserAndManagerTerminal extends Thread {
      * This function is automatically run by the thread after start() is called.
      */
     public void run() {
+	do {
+	    restart = false;
+	    runOnce();
+	    console.dispose();
+	} while (restart); // loop for restarting if change language
+    }
+    private void runOnce() {
 	/*
 	 * NOTE: when testing make all passwords "testpassword". First username should be "test"
 	 */
 		boolean finishedWithoutInterruption = false; // this boolean tells the try-finally clause whether
 						     // scanner.hasNextLine()
 						     // failed
+
 	console = new Console();
 	console.create();
+	console.addLanguageButtons(GoogleTranslateAPILanguageSetter.languageChangeListener);
     
 	try (Scanner scanner = new Scanner(System.in)) {
+
+        this.scanner = scanner;
         
         localLibraryData = loadSession("main.ser");
         if (localLibraryData == null) {
                 localLibraryData = new LocalLibraryData();
         }
 
-	    Account currentAccount=null;
-	    System.out.println("Welcoming to Team 28's Library System (version 0.1).");
-	    
+        Account currentAccount=null;
+        GoogleTranslateAPILanguageSetter.translateAndPrintln("Welcoming to Team 28's Library System (version 0.1).");
+        
 
-        System.out.println("Library User please enter 1, Manager (Librarian) please enter 2.");
+        GoogleTranslateAPILanguageSetter.translateAndPrintln("Library User please enter 1, Manager (Librarian) please enter 2.");
         boolean isManager=true;
 
         String AccountTypeSelection = scanner.nextLine(); //Judge user type
         while(!AccountTypeSelection.equals("1")&&!AccountTypeSelection.equals("2")){
-            System.out.println("Please only enter 1 or 2.");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("Please only enter 1 or 2.");
             AccountTypeSelection = scanner.nextLine();
         }
         switch (AccountTypeSelection) {
@@ -60,10 +79,10 @@ public class UserAndManagerTerminal extends Thread {
             isManager=true;
                 break;
         }
-        System.out.println("Log in to an account, please enter 1.\nCreate a new account, please enter 2.");
+        GoogleTranslateAPILanguageSetter.translateAndPrintln("Log in to an account, please enter 1.\nCreate a new account, please enter 2.");
         String LogInTypeSelection = scanner.nextLine(); //Select to log in or create an account
         while(!LogInTypeSelection.equals("1")&&!LogInTypeSelection.equals("2")){
-            System.out.println("Please only enter 1 or 2.");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("Please only enter 1 or 2.");
             LogInTypeSelection = scanner.nextLine();
         }
         
@@ -74,7 +93,7 @@ public class UserAndManagerTerminal extends Thread {
             if(isManager==false)
             currentAccount = tryLoggingInUser(scanner, localLibraryData);
             if (currentAccount == null) {
-                System.out.println("Login failed. Exiting.");
+        	GoogleTranslateAPILanguageSetter.translateAndPrintln("Login failed. Exiting.");
                         finishedWithoutInterruption = true;
                         return;
             }
@@ -82,7 +101,7 @@ public class UserAndManagerTerminal extends Thread {
             case "2":
             currentAccount = tryCreatingAccount(scanner, localLibraryData, isManager);
             if (currentAccount == null) {
-                System.out.println("Account creation failed. Exiting.");
+        	GoogleTranslateAPILanguageSetter.translateAndPrintln("Account creation failed. Exiting.");
                         finishedWithoutInterruption = true;
                         return;
             }
@@ -103,34 +122,35 @@ public class UserAndManagerTerminal extends Thread {
 	    } while (userOrManagerCommandResult != UserOrManagerCommandResult.EXIT);
 
 	    finishedWithoutInterruption = true;
+	} catch (NoSuchElementException e) {
 	} finally {
 	    if (!finishedWithoutInterruption) {
-		System.out.println("Program interrupted. Exiting.");
-	    }else{System.out.println("Shut down the system");}
+		GoogleTranslateAPILanguageSetter.translateAndPrintln("Program interrupted. Exiting.");
+	    }else{GoogleTranslateAPILanguageSetter.translateAndPrintln("Shut down the system");}
 	}
     }
     // Create a new account 
     private Account tryCreatingAccount(Scanner scanner, LocalLibraryData localLibraryData, boolean isManager) {
         String username = null;
         while (username == null) {
-            System.out.print("Username: ");
+            GoogleTranslateAPILanguageSetter.translateAndPrint("Username: ");
             if (!scanner.hasNextLine()) {
                 return null;
             } 
             String usernameEntered = scanner.nextLine();
             if (!usernameEntered.matches("^[a-zA-Z0-9 _-]*$")) {
-        	System.out.println("The username must contain only letters, numbers, _- symbols, or spaces.");
+        	GoogleTranslateAPILanguageSetter.translateAndPrintln("The username must contain only letters, numbers, _- symbols, or spaces.");
             } else if (!(1 <= usernameEntered.length() && usernameEntered.length() <= 99)) {
-        	System.out.println("The username must be 1 to 99 characters long.");
+        	GoogleTranslateAPILanguageSetter.translateAndPrintln("The username must be 1 to 99 characters long.");
             } else if (localLibraryData.managerAccounts.containsKey(usernameEntered) && localLibraryData.userAccounts.containsKey(usernameEntered)) {
-        	System.out.println("The username already exists.");
+        	GoogleTranslateAPILanguageSetter.translateAndPrintln("The username already exists.");
             } else {
         	username = usernameEntered;
             }
         }
         String password = null;
         while (password == null) {
-            System.out.print("Password: ");
+            GoogleTranslateAPILanguageSetter.translateAndPrint("Password: ");
             console.setPasswordMode(true);
             if (!scanner.hasNextLine()) {
                 return null;
@@ -138,9 +158,9 @@ public class UserAndManagerTerminal extends Thread {
             String passwordEntered = scanner.nextLine();
             console.setPasswordMode(false);
             if (!passwordEntered.matches("^[a-zA-Z0-9 _-`~!@#$%^&*()=+\\[{\\]}\\\\|;:'\",<.>/?]*$")) {
-        	System.out.println("The password must contain only letters, numbers, _-`~!@#$%^&*()=+[{]}\\|;:'\",<.>/? symbols, or spaces.");
+        	GoogleTranslateAPILanguageSetter.translateAndPrintln("The password must contain only letters, numbers, _-`~!@#$%^&*()=+[{]}\\|;:'\",<.>/? symbols, or spaces.");
             } else if (!(1 <= passwordEntered.length() && passwordEntered.length() <= 99)) {
-        	System.out.println("The password must be 1 to 99 characters long.");
+        	GoogleTranslateAPILanguageSetter.translateAndPrintln("The password must be 1 to 99 characters long.");
             } else {
         	password = passwordEntered;
             }
@@ -148,18 +168,18 @@ public class UserAndManagerTerminal extends Thread {
         Account newAccount;
         if (isManager) {
             newAccount = new Manager(username, password, 2); //name manager type to '2'
-            System.out.println("The manager account " + username + " was created successfully.");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("The manager account " + username + " was created successfully.");
         } else {
             newAccount = new User(username, password, 1);    //name user type to '1'
-            System.out.println("The user account " + username + " was created successfully.");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("The user account " + username + " was created successfully.");
         }
         return newAccount;
     }
     private Account tryLoggingInUser(Scanner scanner, LocalLibraryData localLibraryData) {
-        System.out.println("Please log in to an account.");
+        GoogleTranslateAPILanguageSetter.translateAndPrintln("Please log in to an account.");
         Account accountToLogIn = null;
         while (accountToLogIn == null) {
-            System.out.print("Username: ");
+            GoogleTranslateAPILanguageSetter.translateAndPrint("Username: ");
             if (!scanner.hasNextLine()) {
                 return null;
             }
@@ -167,12 +187,12 @@ public class UserAndManagerTerminal extends Thread {
             if (localLibraryData.userAccounts.containsKey(usernameEntered)) {
         	accountToLogIn = localLibraryData.userAccounts.get(usernameEntered);
             } else {
-        	System.out.println("Account not found.");
+        	GoogleTranslateAPILanguageSetter.translateAndPrintln("Account not found.");
             return null;
             }
         }
         while (true) {
-            System.out.print("Password: ");
+            GoogleTranslateAPILanguageSetter.translateAndPrint("Password: ");
             console.setPasswordMode(true);
             if (!scanner.hasNextLine()) {
                 return null;
@@ -180,17 +200,17 @@ public class UserAndManagerTerminal extends Thread {
             String passwordEntered = scanner.nextLine();
             console.setPasswordMode(false);
             if (!accountToLogIn.passwordEquals(passwordEntered)) {
-        	System.out.println("Password incorrect.");
+        	GoogleTranslateAPILanguageSetter.translateAndPrintln("Password incorrect.");
             } else {
         	return accountToLogIn;
             }
         }
     }
     private Account tryLoggingInManager(Scanner scanner, LocalLibraryData localLibraryData) {
-        System.out.println("Please log in to an account.");
+        GoogleTranslateAPILanguageSetter.translateAndPrintln("Please log in to an account.");
         Account accountToLogIn = null;
         while (accountToLogIn == null) {
-            System.out.print("Username: ");
+            GoogleTranslateAPILanguageSetter.translateAndPrint("Username: ");
             if (!scanner.hasNextLine()) {
                 return null;
             }
@@ -198,12 +218,12 @@ public class UserAndManagerTerminal extends Thread {
             if (localLibraryData.managerAccounts.containsKey(usernameEntered)) {
         	accountToLogIn = localLibraryData.managerAccounts.get(usernameEntered);
             } else {
-        	System.out.println("Account not found.");
+        	GoogleTranslateAPILanguageSetter.translateAndPrintln("Account not found.");
             return null;
             }
         }
         while (true) {
-            System.out.print("Password: ");
+            GoogleTranslateAPILanguageSetter.translateAndPrint("Password: ");
             console.setPasswordMode(true);
             if (!scanner.hasNextLine()) {
                 return null;
@@ -211,7 +231,7 @@ public class UserAndManagerTerminal extends Thread {
             String passwordEntered = scanner.nextLine();
             console.setPasswordMode(false);
             if (!accountToLogIn.passwordEquals(passwordEntered)) {
-        	System.out.println("Password incorrect.");
+        	GoogleTranslateAPILanguageSetter.translateAndPrintln("Password incorrect.");
             } else {
         	return accountToLogIn;
             }
@@ -220,16 +240,16 @@ public class UserAndManagerTerminal extends Thread {
 
     //Input the corresponding number realization function
     private UserOrManagerCommandResult askAndDoNextUserOrManagerCommand(Scanner scanner, LocalLibraryData localLibraryData, Account currentAccount) {
-        System.out.println("Welcome " + currentAccount.getUsername() + ". What would you like to do? Enter a number to make a selection.");
+        GoogleTranslateAPILanguageSetter.translateAndPrintln("Welcome " + currentAccount.getUsername() + ". What would you like to do? Enter a number to make a selection.");
         if (currentAccount instanceof Manager) {
-            System.out.println("1: search for a book");
-            System.out.println("2: checkout book on hold to lend");
-            System.out.println("3: save session");
-            System.out.println("4: add a new book from library");
-            System.out.println("5: delete a book");
-            System.out.println("6: return a lended book");
-            System.out.println("7: quit and save");
-            System.out.println("8: quit without save");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("1: search for a book");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("2: checkout book on hold to lend");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("3: save session");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("4: add a new book from library");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("5: delete a book");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("6: return a lended book");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("7: quit and save");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("8: quit without save");
             if (!scanner.hasNextLine()) {
                 return null;
             }
@@ -259,16 +279,16 @@ public class UserAndManagerTerminal extends Thread {
                 case "8":
                     return UserOrManagerCommandResult.EXIT; 
         	default:
-                    System.out.println("Selection unavailable");
+                    GoogleTranslateAPILanguageSetter.translateAndPrintln("Selection unavailable");
                     break;
             }
         } else if (currentAccount instanceof User) {
             
-            System.out.println("1: search for a book");
-            System.out.println("2: apply to lend a book");
-            System.out.println("3: save session");
-            System.out.println("4: quit and save");
-            System.out.println("5: quit without save");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("1: search for a book");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("2: apply to lend a book");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("3: save session");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("4: quit and save");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("5: quit without save");
 
             if (!scanner.hasNextLine()) {
                 return null;
@@ -291,7 +311,7 @@ public class UserAndManagerTerminal extends Thread {
                     return UserOrManagerCommandResult.EXIT;   
                     
         	default:
-                    System.out.println("Selection unavailable");
+                    GoogleTranslateAPILanguageSetter.translateAndPrintln("Selection unavailable");
                     break;
             }
         } else {
@@ -305,6 +325,10 @@ public class UserAndManagerTerminal extends Thread {
 	LOG_OUT;
     }
 
+    void restart() {
+	restart = true;
+	interrupt();
+    }
 
     /**
      * save data function

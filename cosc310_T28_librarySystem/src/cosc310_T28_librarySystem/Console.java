@@ -1,5 +1,6 @@
 package cosc310_T28_librarySystem;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -16,9 +17,14 @@ import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 
+import javax.swing.AbstractAction;
+import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -43,6 +49,7 @@ public class Console {
     private PrintStream fieldOutput;
     private GridBagConstraints inputFieldConstraints; // used to swap inputField and passwordInputField
     private boolean passwordMode = false;
+    ActionListener enterListener;
     
 
     public void create() {
@@ -78,7 +85,7 @@ public class Console {
         //Setup listeners
 
         //This listener listens for ENTER key on the inputField.
-        ActionListener enterListener = new ActionListener() {
+        enterListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
         	String text = inputField.getText();
@@ -169,7 +176,8 @@ public class Console {
 	    public void componentHidden(ComponentEvent e) {
 	    }
 	});
-	consoleFrame.add(scroll);
+	consoleFrame.setLayout(new BorderLayout());
+	consoleFrame.add(scroll, BorderLayout.CENTER);
 	consoleFrame.pack();
 
 	// make inputField focused by default
@@ -192,6 +200,9 @@ public class Console {
         setSystemOutAndSystemIn();
 
     }
+    public void dispose() {
+	consoleFrame.dispose();
+    }
 
     JTextPaneOutputStream jTextPaneOutputStream;
     public void setSystemOutAndSystemIn() {
@@ -210,6 +221,33 @@ public class Console {
 	    inputField.requestFocus();
 	}
 	this.passwordMode = passwordMode;
+    }
+    
+    public void addLanguageButtons(ActionListener listener) {
+	JMenu languageMenu = new JMenu();
+	ButtonGroup radioButtonSelectionShare = new ButtonGroup();
+	for (String s : new String[] {"enEnglish", "frFrancais", "esEspanol", "zhChinese", "deDeutsch", "itItaliano", "nlNederlands", "daDansk", "noNorsk", "svSvenska", "ptPortugues", "ruRussian", "fiSuomi", "plPolski", "bgBulgarian", "csCesky"}) {
+	    JRadioButtonMenuItem languageMenuItem = new JRadioButtonMenuItem(new AbstractAction(s.substring(2)) {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            languageMenu.setText(s.substring(2));
+	            listener.actionPerformed(e);
+	        }
+	    });
+	    languageMenuItem.setActionCommand(s.substring(0, 2));
+	    if (s.startsWith(GoogleTranslateAPILanguageSetter.currentLanguage)) {
+		languageMenuItem.setSelected(true);
+                languageMenu.setText(s.substring(2));
+	    }
+	    languageMenu.add(languageMenuItem);
+	    radioButtonSelectionShare.add(languageMenuItem);
+	}
+	
+	JMenuBar menuBar = new JMenuBar();
+	menuBar.add(languageMenu);
+	
+	consoleFrame.add(menuBar, BorderLayout.SOUTH);
+	consoleFrame.pack();
     }
 
 

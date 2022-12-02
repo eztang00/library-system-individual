@@ -31,7 +31,7 @@ public class User extends Account {
     //Apply for borrowing books
     Book borrowBook(Scanner scanner, LocalLibraryData localLibraryData) {
     ArrayList<Book> bookFoundlist = searchForABook(scanner,localLibraryData,true);
-    System.out.println("Choose the id(number before the book) of book you want to select: ");
+    GoogleTranslateAPILanguageSetter.translateAndPrintln("Choose the id(number before the book) of book you want to select: ");
     if (!scanner.hasNextLine()) {
 	    return null;
 	} 
@@ -42,19 +42,19 @@ public class User extends Account {
             if(enter>=1&&enter<=bookFoundlist.size())
                 break;
             else
-            System.out.println("Please enter a right id: ");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("Please enter a right id: ");
         }else
-            System.out.println("Please enter a number: ");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("Please enter a number: ");
     }
     
     Book wantToBorrow = bookFoundlist.get(Integer.valueOf(enter)-1);
-    System.out.println("Sure to borrow book: Title = " + wantToBorrow.title + " ISBN = " + wantToBorrow.iSBN+"?");
+    System.out.println(GoogleTranslateAPILanguageSetter.translate("Sure to borrow book: Title = ") + wantToBorrow.title + " ISBN = " + wantToBorrow.iSBN+"?");
     boolean df=false;
     String define = scanner.nextLine();
     while(!define.equals("Y")&& !define.equals("N")){
-            System.out.println("Please enter 'Y' or 'N'");
-            define = scanner.nextLine();
-        }
+	GoogleTranslateAPILanguageSetter.translateAndPrintln("Please enter 'Y' or 'N'");
+        define = scanner.nextLine();
+    }
     if(define.equals("Y"))
         df=true;
     else if(define.equals("N"))
@@ -63,14 +63,14 @@ public class User extends Account {
    
     if(df==true){
         if(borrow_num>=3){
-            System.out.println("You have already borrow "+borrow_num+" book(s)! Cannot borrow more.");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("You have already borrow "+borrow_num+" book(s)! Cannot borrow more.");
             return null;
         }else{
         if (localLibraryData.freeToLend.contains(wantToBorrow)) {
             localLibraryData.freeToLend.remove(wantToBorrow);
             wantToBorrow.holder=User.this;
             localLibraryData.readyToLend.add(wantToBorrow);
-            System.out.println("You order to borrow book: Title = " + wantToBorrow.title + " ISBN = " + wantToBorrow.iSBN+" is received.\nPlease Please go to the library to get it later");
+            System.out.println(GoogleTranslateAPILanguageSetter.translate("You order to borrow book: Title = ") + wantToBorrow.title + " ISBN = " + wantToBorrow.iSBN+" is received.\nPlease Please go to the library to get it later");
             for(int i=0;i<max_borrow;i++){
             if(borrow_books[i]==null){
                 borrow_books[i]=wantToBorrow;
@@ -80,12 +80,12 @@ public class User extends Account {
             }
             return wantToBorrow;
     }else{
-            System.out.println("Sorry, this book has been lended.");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("Sorry, this book has been lended.");
         return null;
     }
     }
     }else{
-        System.out.println("Borrow stop.");
+        GoogleTranslateAPILanguageSetter.translateAndPrintln("Borrow stop.");
     }
     return null;
     }

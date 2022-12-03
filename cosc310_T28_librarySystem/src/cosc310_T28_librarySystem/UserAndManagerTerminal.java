@@ -286,9 +286,10 @@ public class UserAndManagerTerminal extends Thread {
             
             GoogleTranslateAPILanguageSetter.translateAndPrintln("1: search for a book");
             GoogleTranslateAPILanguageSetter.translateAndPrintln("2: apply to lend a book");
-            GoogleTranslateAPILanguageSetter.translateAndPrintln("3: save session");
-            GoogleTranslateAPILanguageSetter.translateAndPrintln("4: quit and save");
-            GoogleTranslateAPILanguageSetter.translateAndPrintln("5: quit without save");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("3: Google Map directions to library");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("4: save session");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("5: quit and save");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("6: quit without save");
 
             if (!scanner.hasNextLine()) {
                 return null;
@@ -302,12 +303,15 @@ public class UserAndManagerTerminal extends Thread {
                     ((User) currentAccount).borrowBook(scanner, localLibraryData);
                     break;
                 case "3":
-                    saveSession(scanner, localLibraryData, "main.ser");
+                    new GoogleStaticMapAPIDisplayer().showMap(scanner);
                     break;
                 case "4":
                     saveSession(scanner, localLibraryData, "main.ser");
-                    return UserOrManagerCommandResult.EXIT;
+                    break;
                 case "5":
+                    saveSession(scanner, localLibraryData, "main.ser");
+                    return UserOrManagerCommandResult.EXIT;
+                case "6":
                     return UserOrManagerCommandResult.EXIT;   
                     
         	default:

@@ -50,6 +50,7 @@ public class Console {
     private GridBagConstraints inputFieldConstraints; // used to swap inputField and passwordInputField
     private boolean passwordMode = false;
     ActionListener enterListener;
+    JMenuBar menuBar;
     
 
     public void create() {
@@ -242,12 +243,18 @@ public class Console {
 	    languageMenu.add(languageMenuItem);
 	    radioButtonSelectionShare.add(languageMenuItem);
 	}
+	addMenu(languageMenu);
+    }
+    public void addMenu(JMenu menu) {
+	if (menuBar == null) {
+	    menuBar = new JMenuBar();
+	    consoleFrame.add(menuBar, BorderLayout.SOUTH);
+	}
+
+        menuBar.add(menu);
 	
-	JMenuBar menuBar = new JMenuBar();
-	menuBar.add(languageMenu);
-	
-	consoleFrame.add(menuBar, BorderLayout.SOUTH);
 	consoleFrame.pack();
+	
     }
 
 

@@ -15,11 +15,11 @@ import java.net.URLEncoder;
  */
 public class GoogleTranslateAPILink {
 
-    public static void main(String[] args) throws IOException {
-        String text = "Hello world!";
-        //Translated text: Hallo Welt!
-        System.out.println("Translated text: " + translate("en", "de", text));
-    }
+//    public static void main(String[] args) throws IOException {
+//        String text = "Hello world!";
+//        //Translated text: Hallo Welt!
+//        System.out.println("Translated text: " + translate("en", "de", text));
+//    }
 
     static String translate(String langFrom, String langTo, String text) throws IOException {
         // INSERT YOU URL HERE

@@ -56,6 +56,7 @@ public class GoogleTranslateAPILanguageSetter {
 		((JComponent) loadingFrame.getContentPane()).paintImmediately(((JComponent) loadingFrame.getContentPane()).getBounds());
 		String s = GoogleTranslateAPILink.translate("en", currentLanguage, input);
 		return s.replaceAll("&#39;", "'").replaceAll("&quot;", "\"");
+//		return s;
 	    } catch (IOException e) {
 		return "translation error, no internet?";
 	    } finally {

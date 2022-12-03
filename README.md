@@ -8,7 +8,7 @@ Verison.
 
 (VER 3e) Ethan Tang created his own version of the program, allowing the user to change language using the Google Translate API, and showing directions to the library using Google Maps API.
 
-##Version 3e Updates
+## Version 3e Updates
 Translate all the text using Google Translate API: the user can now select a language from the drop down list, or choose any language known to Google Translate by typing a language code like “en” for English.
 
 Get directions for visiting the library, using Google Maps API: the user can now ask for directions to go from anywhere to the library (currently that is set at UBC Okanagan as a demo), thanks to Google Maps. It does not quite work as well as Google Maps running on a modern browser: it isn’t interactive and the image quality is not as good. But this program is not meant to compete with other methods, it just needs to work.

@@ -8,6 +8,10 @@ Verison.
 
 (VER 3e) Ethan Tang created his own version of the program, allowing the user to change language using the Google Translate API, and showing directions to the library using Google Maps API.
 
+##Version 3e Updates
+Translate all the text using Google Translate API: the user can now select a language from the drop down list, or choose any language known to Google Translate by typing a language code like “en” for English.
+
+Get directions for visiting the library, using Google Maps API: the user can now ask for directions to go from anywhere to the library (currently that is set at UBC Okanagan as a demo), thanks to Google Maps. It does not quite work as well as Google Maps running on a modern browser: it isn’t interactive and the image quality is not as good. But this program is not meant to compete with other methods, it just needs to work.
 
 ## Compiling and running
 One way to compile it is to use Eclipse. First navigate to https://github.com/Cosc-310-Team-28-2022/library-system. Click on the "Code" button on Github and select "Download ZIP". Open Eclipse (install if necessary) and click "File", "Import", "General", "Projects from Folder or Archive". Make sure "Search for nested projects" is on. Click the "Archive..." not "Directory..." button, and find where you downloaded "library-system-main.zip" to. Maybe three projects will be listed. Uncheck all the boxes but check the box for project "library-system-main.zip_expanded/library-system-main/cosc310_T28_librarySystem". Click finish.

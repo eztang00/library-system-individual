@@ -22,6 +22,8 @@ import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButtonMenuItem;
@@ -225,7 +227,7 @@ public class Console {
     }
     
     public void addLanguageButtons(ActionListener listener) {
-	JMenu languageMenu = new JMenu();
+	JMenu languageMenu = new JMenu(GoogleTranslateAPILanguageSetter.currentLanguage);
 	ButtonGroup radioButtonSelectionShare = new ButtonGroup();
 	for (String s : new String[] {"enEnglish", "frFrancais", "esEspanol", "zhChinese", "deDeutsch", "itItaliano", "nlNederlands", "daDansk", "noNorsk", "svSvenska", "ptPortugues", "ruRussian", "fiSuomi", "plPolski", "bgBulgarian", "csCesky"}) {
 	    JRadioButtonMenuItem languageMenuItem = new JRadioButtonMenuItem(new AbstractAction(s.substring(2)) {
@@ -243,6 +245,16 @@ public class Console {
 	    languageMenu.add(languageMenuItem);
 	    radioButtonSelectionShare.add(languageMenuItem);
 	}
+	String manuallyType2LetterLanguageCode = GoogleTranslateAPILanguageSetter.translate("Manually type 2 letter language code");
+	JMenuItem manuallyType2LetterLanguageCodeButton = new JMenuItem(new AbstractAction(manuallyType2LetterLanguageCode) {
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		String s = JOptionPane.showInputDialog(null, manuallyType2LetterLanguageCode, GoogleTranslateAPILanguageSetter.translate("Language"), JOptionPane.PLAIN_MESSAGE);
+		languageMenu.setText(s);
+		listener.actionPerformed(new ActionEvent(e.getSource(), e.getID(), s));
+	    }
+	});
+	languageMenu.add(manuallyType2LetterLanguageCodeButton);
 	addMenu(languageMenu);
     }
     public void addMenu(JMenu menu) {

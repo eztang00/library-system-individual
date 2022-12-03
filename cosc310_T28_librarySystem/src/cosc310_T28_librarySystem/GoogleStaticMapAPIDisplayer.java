@@ -16,6 +16,7 @@ public class GoogleStaticMapAPIDisplayer extends JFrame {
 //    }
 
     public void showMap(Scanner scanner) {
+	System.out.println(GoogleTranslateAPILanguageSetter.translate("The map quality is currently not very good. For a better interactive map, use a web browser: ") + "https://goo.gl/maps/uu24BoMZqnp8u1eE7");
 	GoogleTranslateAPILanguageSetter.translateAndPrint("Enter starting address for directions (or just press enter): ");
 	if (!scanner.hasNextLine()) {
 	    return;

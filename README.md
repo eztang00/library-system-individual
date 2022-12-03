@@ -6,6 +6,8 @@ Verison.
 
 (VER 2) for the second version, most of the problem that we encountered has been solved. and it works quite perfectly.
 
+(VER 3e) Ethan Tang created his own version of the program, allowing the user to change language using the Google Translate API, and showing directions to the library using Google Maps API.
+
 
 ## Compiling and running
 One way to compile it is to use Eclipse. First navigate to https://github.com/Cosc-310-Team-28-2022/library-system. Click on the "Code" button on Github and select "Download ZIP". Open Eclipse (install if necessary) and click "File", "Import", "General", "Projects from Folder or Archive". Make sure "Search for nested projects" is on. Click the "Archive..." not "Directory..." button, and find where you downloaded "library-system-main.zip" to. Maybe three projects will be listed. Uncheck all the boxes but check the box for project "library-system-main.zip_expanded/library-system-main/cosc310_T28_librarySystem". Click finish.

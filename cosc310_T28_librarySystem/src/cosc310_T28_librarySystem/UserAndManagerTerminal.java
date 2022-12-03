@@ -248,8 +248,9 @@ public class UserAndManagerTerminal extends Thread {
             GoogleTranslateAPILanguageSetter.translateAndPrintln("4: add a new book from library");
             GoogleTranslateAPILanguageSetter.translateAndPrintln("5: delete a book");
             GoogleTranslateAPILanguageSetter.translateAndPrintln("6: return a lended book");
-            GoogleTranslateAPILanguageSetter.translateAndPrintln("7: quit and save");
-            GoogleTranslateAPILanguageSetter.translateAndPrintln("8: quit without save");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("7: Google Map directions to library");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("8: quit and save");
+            GoogleTranslateAPILanguageSetter.translateAndPrintln("9: quit without save");
             if (!scanner.hasNextLine()) {
                 return null;
             }
@@ -274,9 +275,12 @@ public class UserAndManagerTerminal extends Thread {
                     ((Manager) currentAccount).returnBook(scanner, localLibraryData);
                     break;
                 case "7":
+                    new GoogleStaticMapAPIDisplayer().showMap(scanner);
+                    break;
+                case "8":
                     saveSession(scanner, localLibraryData, "main.ser");
                     return UserOrManagerCommandResult.EXIT;
-                case "8":
+                case "9":
                     return UserOrManagerCommandResult.EXIT; 
         	default:
                     GoogleTranslateAPILanguageSetter.translateAndPrintln("Selection unavailable");
